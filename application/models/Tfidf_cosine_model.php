@@ -111,6 +111,16 @@ class Tfidf_cosine_model extends CI_Model{
 		}
 	}
 
+	/*
+	 * Save tfidf score to databse
+	 * @param array $tfidf, int doc_id
+	 */
+	private function save_tfidf($tfidf,$doc_id){
+		foreach($tfidf as $word=>$value){
+			$this->db->query("UPDATE allwords set tfidf='$value' where doc_id=$doc_id and word='$word'");
+		}
+	}
+
 ///////////////////////////// tfidf and keyword generator functions 
 
 	/*
@@ -167,6 +177,17 @@ class Tfidf_cosine_model extends CI_Model{
 		//not needed for cosine similarity
 		//arsort($words);
 		return $words;
+	}
+
+	/*
+	 * Generate keywords from sorted array of $words => $tfidf
+	 * returns array with top keywords only with numeric index
+	 * @param array words, int number of keywords
+	 * @return sliced array
+	 */
+	private function generate_keywords_tfidf($words,$n){
+		arsort($words);
+		return array_keys(array_slice($words,0,$n,1));
 	}
 
 	/*
@@ -245,6 +266,8 @@ class Tfidf_cosine_model extends CI_Model{
 			foreach($data2 as $id => $data3){
 				$words[$data3->word]=$data3->count;
 			}
+			$tfidf = generate_tfidf_array($words);
+
 			$keywords = $this->tfidf_keywords($words,$doc_id);
 			$this->save_keywords($keywords,$doc_id);
 		}
