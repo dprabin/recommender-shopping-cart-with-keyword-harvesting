@@ -224,7 +224,7 @@ class Tfidf_cosine_model extends CI_Model{
 	//Regenerate keywords from regenerated allwords table
 	//Process keywords for all documents in database
 	//TOCHANGE: get sorted words from database
-	
+
 	//to get all doc_id from allwords table
 	private function get_all_doc_id(){
 		$this->db->select('id');
@@ -275,18 +275,4 @@ class Tfidf_cosine_model extends CI_Model{
 		$this->save_keywords($keywords,$doc_id);
 	}
 
-	/////////////////////////////////////////
-
-
-	//This function should be in controller
-	//Handles tfidf keyword generation 
-	//TOCHANGE: don't get text, get words, doc_id from database
-	public function regenerate_keywords_controller(){
-		//First get all text from the database
-		$docs = $this->get_all_text();
-
-		foreach($docs as $doc_id=>$text){
-			$this->tfidf_keywords($text,$doc_id);
-		}
-	}
 }
