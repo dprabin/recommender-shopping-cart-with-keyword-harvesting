@@ -434,8 +434,9 @@ class Tfidf_cosine_model extends CI_Model{
 	 * @param int doc_id1, int doc_id2, double similarity
 	 * @return
 	 */
-	private function save_cosine_similarity($key1,$key2,$similarity){
-
+	private function save_cosine_similarity($doc_id1,$doc_id2,$similarity){
+		$this->db->query('truncate similarity');
+		$this->db->query("insert into similarity (doc_id1,doc_id2,similarity) values($doc_id1,$doc_id2,$similarity)");
 	}
 
 	/*
@@ -446,29 +447,31 @@ class Tfidf_cosine_model extends CI_Model{
 	public function find_cosine_similarity_alldocs(){
 		//read all doc id
 		$data = $this->read_tfidf_vector_from_db();
-		//echo '<pre>';//var_dump($data);die();
-		//we can instead use foreach(alldata as $key=>value) instead of this heck
-		$row = $data[0];
-		unset($row['word']);
 		$vector=array();
-
-
-		
-		
-		foreach($row as $key=>$value){
-			//to use vars in global scope, we need use(reference to var) in lambda header
+		$alldocs = $this->get_all_doc_id();
+		foreach($alldocs as $key => $value) {
+			$doc_id=$value->id;
+			$key = 'd'.$doc_id;
 			$newArray = array_map(function($var) use(&$key) {
 			    return $var[$key];
 			}, $data);
 			$vector[$key]=$newArray;
 		}
-		var_dump($vector);die();
 
+		//var_dump($vector);die();
+		$result=array();
+		$final=array();
 		foreach ($row as $key => $value) {
 			foreach ($row as $key2 => $value2) {
 				$similarity = $this->calculate_cosine_similarity($vector[$key],$vector[$key2]);
-				$this->save_cosine_similarity($key1,$key2,$similarity);
+				//$this->save_cosine_similarity($key1,$key2,$similarity);
+				//echo $key." ~ ".$key2." = ".$similarity.'<br>';
+				$result[$key.'_'.$key2]=$similarity;
 			}
+			arsort($result);
+			echo '<pre>';print_r($result);echo('</pre>');
+			$final = array_merge($final,$result);
+			unset($result);
 		}
 		//echo '<pre>';var_dump($vectors);echo '</pre>';die();
 	}
