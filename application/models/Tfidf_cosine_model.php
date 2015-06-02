@@ -336,6 +336,7 @@ class Tfidf_cosine_model extends CI_Model{
 
 	/*
 	 * Find dot product of two vectors
+	 * a . b = ax*bx + ay*by + az*bz
 	 * @param array vector1, array vector2
 	 * @return floating point number
 	 */
@@ -357,11 +358,16 @@ class Tfidf_cosine_model extends CI_Model{
 
 	/*
 	 * Find magnitude of a vector
+	 * |a| = sqrt(ax^2+ay^2+az^2)
 	 * @param array vector
 	 * @return floating point number
 	 */
 	private function magnitude_vector($vector){
-		return 1;		
+		$runsum = 0;
+		foreach($vector as $key => $value){
+			$runsum += pow($value,2);
+		}
+		return sqrt($runsum);
 	}
 
 	/*
