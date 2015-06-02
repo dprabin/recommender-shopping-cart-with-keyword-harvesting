@@ -139,20 +139,18 @@ class Tfidf_cosine_model extends CI_Model{
 		}
 		//Now sort the word according to tfidf value
 		//For efficiency, we could find top n keywords and discard rest rather than sorting all words
-		arsort($words);
+		//not needed for cosine similarity
+		//arsort($words);
 		return $words;
 	}
 
+	/* not needed for cosine similarity
 	//Generate keywords from sorted array of $words => $tfidf
 	//returns array with top keywords only with numeric index
 	public function generate_keywords_tfidf($words,$n){
 		//find only top n keywords. The words are keys so we return array keys
 		return array_keys(array_slice($words,0,$n,1));
 	}
-
-
-
-	////////////////////////////
 
 	//Find tfidf and keywords from words
 	public function tfidf_keywords($words,$doc_id){
@@ -167,6 +165,7 @@ class Tfidf_cosine_model extends CI_Model{
 		$keywords = $this->generate_keywords_tfidf($words_tfidf,$number_of_keywords);
 		return $keywords;
 	}
+	*/
 
 	////////////////these functions required for regenerate keywords
 
@@ -225,21 +224,7 @@ class Tfidf_cosine_model extends CI_Model{
 	//Regenerate keywords from regenerated allwords table
 	//Process keywords for all documents in database
 	//TOCHANGE: get sorted words from database
-	public function regenerate_keywords_table1(){
-		//loop through all documents in allwords table to get usable words in it
-		//new function to read all data in alldocs table required
-		//find tfidf and save result to keywords table
-		$alldocs = $this->get_all_text();
-		foreach ($alldocs as $doc_id => $text) {
-			$words = $this->text_to_stemmed_words_frequency($text->text);
-			
-			$keywords = $this->tfidf_keywords($words,$doc_id);
-			$this->save_keywords($keywords,$doc_id);
-		}
-	}
-	/////////////////////////////
-	//////////////////////////alternate method to regenerate all keywords
-
+	
 	//to get all doc_id from allwords table
 	private function get_all_doc_id(){
 		$this->db->select('id');
