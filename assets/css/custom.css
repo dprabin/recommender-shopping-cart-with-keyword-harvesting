@@ -1,0 +1,144 @@
+body {
+	padding-top: 75px;
+}
+
+.navbar a{
+	ddd-color: #fff !important;
+}
+
+.cart-block{
+	background: #333;
+	color: #fff;
+	padding: 10px;
+	margin-bottom: 20px;
+}
+
+.panel-list a{
+	display: block;
+	color: #666;
+}
+
+.panel-list .panel-heading h3{
+	padding: 4px;
+	font-size: 18px;
+}
+
+.panel-heading-green{
+	background: #3b7e14 !important;
+	content: #fff !important;
+}
+
+.panel-heading-dark{
+	background: #333 !important;
+	color: #fff !important;
+}
+
+.food{
+	display: relative;
+}
+
+.food-title{
+	text-align: center;
+	padding: 5px;
+	background: #333;
+	color: #fff;
+}
+
+.food-price{
+	position: absolute;
+	bottom: 110px;
+	right: 15px;
+	background: rgba(59,126,20,0.5);
+	color: #fff;
+	padding:5px;
+	font-size: 10px;
+	line-height: 1em;
+	text-align: right;
+}
+.food-price-per-unit{
+	font-size: 22px !important;
+	display: inline;
+}
+
+
+.food-add{
+	margin: 5px auto 20px;
+	width: 100%;
+	text-align:center;
+}
+
+.food-image{
+	width: 100%;
+	height: 150px;
+	overflow: hidden;
+}
+
+.food-image-img{
+	width: 100%;
+}
+
+.details img{
+	width:100%;
+}
+
+.footer{
+	background: #333;
+	color:#fff;
+	height: 70px;
+	text-align: center;
+	padding-top:20px;
+}
+
+.qty{
+	width: 40px;
+	color: #666 !important;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+
+/*
+ *details.php view
+ */
+
+.food-image-details{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.details-food-price{
+	text-align: center;
+	font-size: 28px;
+	margin-bottom: 5px;
+	background: rgba(59,126,20,0.5);
+	color: #fff;
+	padding:5px;
+}
+.details-food-title{
+	text-align: left;
+}
+
+.details-buy{
+	text-align: center;
+	vertical-align: middle;
+}
+
+/*
+ * end of details.php view
+ */
+
+
+
+/*
+ * Sidebar
+ */
+.sidebar-cart-qty{
+	width: 40px;
+	color: #666 !important;
+	text-align: center;
+	margin-bottom: 5px;
+}
+/*
+  * /Sidebar
+  */
