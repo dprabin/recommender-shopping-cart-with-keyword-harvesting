@@ -250,7 +250,7 @@ class Tfidf_cosine_model extends CI_Model{
 		$this->db->select('word,count');
 		$this->db->from('allwords');
 		$this->db->where('doc_id',$doc_id);
-		$this->db->order_by('count','desc');
+		//$this->db->order_by('count','desc');
 		$query = $this->db->get();
 		return $query->result();
 	}
@@ -304,8 +304,8 @@ class Tfidf_cosine_model extends CI_Model{
 	 * @param int doc_id
 	 * @return db object
 	 */
-	private function read_tfidf_doc_id($doc_id){
-		$this->db->select('words,tfidf');
+	private function read_word_tfidf_doc_id($doc_id){
+		$this->db->select('word,tfidf');
 		$this->db->from('allwords');
 		$this->db->where('doc_id',$doc_id);
 		$query = $this->db->get();
@@ -313,25 +313,73 @@ class Tfidf_cosine_model extends CI_Model{
 	}
 
 	/*
-	 * Construct a vector of tfidf as
-	 * words, doc_x  , doc_y  , doc_z
-	 * -----, -------, -------, ---------
-	 * word1, tfidfx1, tfidfy1, tfidfz1
-	 * word2, tfidfx2, tfidfy2, tfidfz2
+	 * Construct a vector of tfidf with word as key and tfidf as float
 	 */
-	private function create_tfidf_vector(){
-		$alldocs = get_all_doc_id();
+	private function create_tfidf_vector($input){
 		$vector = array();
-		foreach($alldocs as $id => $data){
-			$doc_id = $data->id;
-			$input = read_tfidf_doc_id($doc_id);
-			$tfidf = array();
-			foreach($input as $word => $score){
-				$tfidf[$word] = $score;
-			}
-			//$vector[][2]=$tfidf;
-
+		foreach($input as $key => $value){	
+			$vector[$value->word] = (float)$value->tfidf;
 		}
+		return $vector;
+	}
+
+	/*
+	 * Combine two arrays on key and fill by zero if it does not exist
+	 * find max of two and loop 
+	 * @param array array1, array array2
+	 * @return array arrayResult
+	 */
+	private function array_combine_zero_fill($a1,$a2,$doc_id){
+		$keys = array_flip(array_merge(array_keys($a1), array_keys($a2)));
+		foreach($keys as $k=>$v) {
+			$result[$k]['doc1'] = isset($a1[$k]) ? $a1[$k] : 0;
+			$result[$k]['doc2'] = isset($a2[$k]) ? $a2[$k] : 0;
+		}
+		return $result;
+	}
+
+	/*
+	 * Mysql pivot table to combine all vars
+	 * alternative better performance solution
+	 *
+	private function read_tfidf_vector_from_db(){
+		$alldocs = $this->get_all_doc_id();
+		$query = "SELECT word ";
+		$vectors = array();
+		foreach ($alldocs as $key => $value) {
+			$doc_id=(int)$value->id;
+			$query = $query.", MAX(IF(doc_id = ".$doc_id.", tfidf, 0)) AS doc".$doc_id.",";
+		}
+		$query = $query."FROM allwords GROUP BY word";
+		var_dump($query);
+
+	
+	//Pivots are very bad in performance, use following instead
+
+		$alldocs = $this->get_all_doc_id();
+		$query = "SELECT word ";
+		foreach ($alldocs as $key => $value) {
+			$doc_id=(int)$value->id;
+			$query = $query.", COUNT(doc_id = ".$doc_id." OR NULL) as concat('d',doc_id)";
+		}
+		$query .= "FROM   allwords GROUP  BY word";
+	}
+	*/
+
+	/*
+	 * Build Pivot table query to execute it 
+	 * new function, works with other values too
+	 * words, doc1, doc2, doc3, ....
+	 * apple, 12.5, 56.3,  0.6,
+	 * banana,11.6,  5.8, 14.2, ...
+	 * cherry, 7.2,  7.9,  5.3, ...
+	 */
+	private function read_tfidf_vector_from_db(){
+		$query = $this->db->query("SELECT GROUP_CONCAT(DISTINCT CONCAT('MAX(IF(doc_id = ''',doc_id,''', tfidf, 0)) AS ', concat('d',doc_id))) as q FROM allwords");
+		$row = $query->row();
+		$query = $this->db->query("SELECT word, ".$row->q." FROM allwords GROUP BY word");
+		//var_dump($query->result());die();
+		return $query->result_array();
 	}
 
 	/*
@@ -340,8 +388,9 @@ class Tfidf_cosine_model extends CI_Model{
 	 * @param array vector1, array vector2
 	 * @return floating point number
 	 */
+
 	private function dot_product($vector1,$vector2){
-		//using php5.3 lambda functions
+		//using php5.3 lambda function
 		return array_sum(array_map(function($a,$b) { return $a*$b; }, $vector1, $vector2));
 		//using create_function for php>=4 with bad performance
 		//return array_sum(array_map(create_function('$a, $b', 'return $a * $b;'), $array1, $array2));
@@ -372,11 +421,55 @@ class Tfidf_cosine_model extends CI_Model{
 
 	/*
 	 * Find cross product of two vectors
+	 * cos theta = a . b / |a|*|b|
 	 * @param array vector1, array vector2
 	 * @return floating point number
 	 */
-	private function cosine_similarity($vector1,$vector2){
-		return dot_product($vector1,$vector2)/(magnitude_vector($vector1)*magnitude_vector($vector2));
+	private function calculate_cosine_similarity($vector1,$vector2){
+		return $this->dot_product($vector1,$vector2)/($this->magnitude_vector($vector1)*$this->magnitude_vector($vector2));
 	}
 
+	/*
+	 * saves teh cosine similarity data to db
+	 * @param int doc_id1, int doc_id2, double similarity
+	 * @return
+	 */
+	private function save_cosine_similarity($key1,$key2,$similarity){
+
+	}
+
+	/*
+	 * Find cosine similarity of all documents
+	 * @param
+	 * @return
+	 */
+	public function find_cosine_similarity_alldocs(){
+		//read all doc id
+		$data = $this->read_tfidf_vector_from_db();
+		//echo '<pre>';//var_dump($data);die();
+		//we can instead use foreach(alldata as $key=>value) instead of this heck
+		$row = $data[0];
+		unset($row['word']);
+		$vector=array();
+
+
+		
+		
+		foreach($row as $key=>$value){
+			//to use vars in global scope, we need use(reference to var) in lambda header
+			$newArray = array_map(function($var) use(&$key) {
+			    return $var[$key];
+			}, $data);
+			$vector[$key]=$newArray;
+		}
+		var_dump($vector);die();
+
+		foreach ($row as $key => $value) {
+			foreach ($row as $key2 => $value2) {
+				$similarity = $this->calculate_cosine_similarity($vector[$key],$vector[$key2]);
+				$this->save_cosine_similarity($key1,$key2,$similarity);
+			}
+		}
+		//echo '<pre>';var_dump($vectors);echo '</pre>';die();
+	}
 }
