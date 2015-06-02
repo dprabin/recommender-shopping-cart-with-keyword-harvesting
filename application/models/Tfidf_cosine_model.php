@@ -1,5 +1,5 @@
 <?php
-class Tfidf_model extends CI_Model{
+class Tfidf_cosine_model extends CI_Model{
 
 	//This model needs a table named allwords
 	//$tablename = 'allwords';

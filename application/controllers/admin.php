@@ -156,6 +156,7 @@ class Admin extends CI_Controller{
 	//This method for regenerating keywords 
 	//required for tfidf keywords
 	public function regenerate_keywords(){
+		$this->load->model('Tfidf_cosine_model');
 		$this->Tfidf_cosine_model->regenerate_allwords_table();
 		$this->Tfidf_cosine_model->regenerate_keywords_table();
 		redirect('admin');
