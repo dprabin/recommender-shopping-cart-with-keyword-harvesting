@@ -185,7 +185,8 @@ class Tfidf_cosine_model extends CI_Model{
 	 * @param array words, int number of keywords
 	 * @return sliced array
 	 */
-	private function generate_keywords_tfidf($words,$n){
+	private function generate_keywords_tfidf($words,$n=5){
+		//TOCHANGE: sort only top n keywords for efficiency for O ( N log n )
 		arsort($words);
 		return array_keys(array_slice($words,0,$n,1));
 	}
@@ -257,7 +258,7 @@ class Tfidf_cosine_model extends CI_Model{
 	/*
 	 * regenerate all keywords
 	 */
-	public function regenerate_keywords_table(){
+	public function regenerate_allwords_table(){
 		$alldocs = $this->get_all_doc_id();
 		foreach ($alldocs as $id => $data) {
 			$doc_id=$data->id;
@@ -266,9 +267,10 @@ class Tfidf_cosine_model extends CI_Model{
 			foreach($data2 as $id => $data3){
 				$words[$data3->word]=$data3->count;
 			}
-			$tfidf = generate_tfidf_array($words);
+			$tfidf = $this->generate_tfidf_array($words);
+			$this->save_tfidf($tfidf,$doc_id);
 
-			$keywords = $this->tfidf_keywords($words,$doc_id);
+			$keywords = $this->generate_keywords_tfidf($tfidf);
 			$this->save_keywords($keywords,$doc_id);
 		}
 	}
