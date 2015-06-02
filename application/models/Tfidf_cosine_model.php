@@ -97,7 +97,6 @@ class Tfidf_cosine_model extends CI_Model{
 	private function insert_words_allwords_table($words,$doc_id){
 		//insert each word with count
 		foreach($words as $word => $cnt){
-			//var_dump($cnt);die();
 			$this->db->query("INSERT INTO allwords (doc_id,word,count) values ($doc_id,'$word',$cnt) ON DUPLICATE KEY UPDATE count = count + $cnt");
 		}
 	}
@@ -149,7 +148,6 @@ class Tfidf_cosine_model extends CI_Model{
 	 * @return float tfidf
 	*/
 	private function calculate_tfidf($word,$tf){
-		//var_dump($tf);die();
 		$tfidf = $tf * log ($this->alldoc_count / $this->get_df($word), 2);
 		return $tfidf;
 	}
@@ -162,7 +160,6 @@ class Tfidf_cosine_model extends CI_Model{
 	 */
 	private function generate_tfidf_array($words){
 		foreach($words as $key => $value){
-			//var_dump($key);var_dump($value);die();
 			$words[$key] = $this->calculate_tfidf($key,(int)$value);
 		}
 		//Now sort the word according to tfidf value
