@@ -161,5 +161,12 @@ class Admin extends CI_Controller{
 		$this->Tfidf_cosine_model->regenerate_keywords_table();
 		redirect('admin');
 	}
+
+	//This method for testing cosine similarity
+	public function cosine_similarity(){
+		$this->load->model('Tfidf_cosine_model');
+		$this->Tfidf_cosine_model->find_cosine_similarity_alldocs(1);
+		redirect('admin');
+	}
 }
 ?>
