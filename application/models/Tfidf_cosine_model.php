@@ -144,31 +144,6 @@ class Tfidf_cosine_model extends CI_Model{
 		return $words;
 	}
 
-	/* not needed for cosine similarity
-	//Generate keywords from sorted array of $words => $tfidf
-	//returns array with top keywords only with numeric index
-	public function generate_keywords_tfidf($words,$n){
-		//find only top n keywords. The words are keys so we return array keys
-		return array_keys(array_slice($words,0,$n,1));
-	}
-
-	//Find tfidf and keywords from words
-	public function tfidf_keywords($words,$doc_id){
-		//generate array of $word => $tfidf
-		$words_tfidf = $this->generate_tfidf_array($words);
-		foreach ($words_tfidf as $word => $tfidf) {
-			error_log("documnet($doc_id), $word = $tfidf",0);
-		}
-		//Get top n keywords from this array
-		//TOCHANGE: read number_of_keywords from database
-		$number_of_keywords = 5;
-		$keywords = $this->generate_keywords_tfidf($words_tfidf,$number_of_keywords);
-		return $keywords;
-	}
-	*/
-
-	////////////////these functions required for regenerate keywords
-
 	//empty keywords, docs_keywords_link, allwords and allwords table
 	//So that we can store new values
 	//TOCHANGE: This may not necessary if we update count table on each insert
