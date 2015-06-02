@@ -289,4 +289,88 @@ class Tfidf_cosine_model extends CI_Model{
 		$keywords = $this->tfidf_keywords($words,$doc_id);
 		$this->save_keywords($keywords,$doc_id);
 	}
+
+
+
+
+
+
+
+
+//////////////////////// Cosine Similarity ///////////////////
+
+	/*
+	 * Read tfidf data from allwords table
+	 * @param int doc_id
+	 * @return db object
+	 */
+	private function read_tfidf_doc_id($doc_id){
+		$this->db->select('words,tfidf');
+		$this->db->from('allwords');
+		$this->db->where('doc_id',$doc_id);
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	/*
+	 * Construct a vector of tfidf as
+	 * words, doc_x  , doc_y  , doc_z
+	 * -----, -------, -------, ---------
+	 * word1, tfidfx1, tfidfy1, tfidfz1
+	 * word2, tfidfx2, tfidfy2, tfidfz2
+	 */
+	private function create_tfidf_vector(){
+		$alldocs = get_all_doc_id();
+		$vector = array();
+		foreach($alldocs as $id => $data){
+			$doc_id = $data->id;
+			$input = read_tfidf_doc_id($doc_id);
+			$tfidf = array();
+			foreach($input as $word => $score){
+				$tfidf[$word] = $score;
+			}
+			//$vector[][2]=$tfidf;
+
+		}
+	}
+
+	/*
+	 * Find dot product of two vectors
+	 * @param array vector1, array vector2
+	 * @return floating point number
+	 */
+	private function dot_product($vector1,$vector2){
+		//using php5.3 lambda functions
+		return array_sum(array_map(function($a,$b) { return $a*$b; }, $vector1, $vector2));
+		//using create_function for php>=4 with bad performance
+		//return array_sum(array_map(create_function('$a, $b', 'return $a * $b;'), $array1, $array2));
+	}
+
+	/*
+	 * Find cross product of two vectors
+	 * @param array vector1, array vector2
+	 * @return array vector
+	 */
+	private function cross_product($vector1,$vector2){
+		return array(1,0.3,5);	
+	}
+
+	/*
+	 * Find magnitude of a vector
+	 * @param array vector
+	 * @return floating point number
+	 */
+	private function magnitude_vector($vector){
+		return 1;		
+	}
+
+	/*
+	 * Find cross product of two vectors
+	 * @param array vector1, array vector2
+	 * @return floating point number
+	 */
+	private function cosine_similarity($vector1,$vector2){
+		return dot_product($vector1,$vector2)/(magnitude_vector($vector1)*magnitude_vector($vector2));
+	}
+
 }
