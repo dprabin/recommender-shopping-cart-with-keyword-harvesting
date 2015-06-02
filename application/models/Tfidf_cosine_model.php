@@ -258,7 +258,7 @@ class Tfidf_cosine_model extends CI_Model{
 	/*
 	 * regenerate all keywords
 	 */
-	public function regenerate_allwords_table(){
+	public function regenerate_keywords_table(){
 		$alldocs = $this->get_all_doc_id();
 		foreach ($alldocs as $id => $data) {
 			$doc_id=$data->id;
