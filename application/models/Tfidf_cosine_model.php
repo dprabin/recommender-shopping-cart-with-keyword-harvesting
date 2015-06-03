@@ -184,12 +184,13 @@ class Tfidf_cosine_model extends CI_Model{
 	 * returns array with top keywords only with numeric index
 	 * @param array words, int number of keywords
 	 * @return sliced array
-	 */
+	 *
 	private function generate_keywords_tfidf($words,$n=5){
 		//TOCHANGE: sort only top n keywords for efficiency for O ( N log n )
 		arsort($words);
 		return array_keys(array_slice($words,0,$n,1));
 	}
+	*/
 
 	/*
 	 * empty keywords, docs_keywords_link, allwords and allwords table
@@ -269,9 +270,6 @@ class Tfidf_cosine_model extends CI_Model{
 			}
 			$tfidf = $this->generate_tfidf_array($words);
 			$this->save_tfidf($tfidf,$doc_id);
-
-			$keywords = $this->generate_keywords_tfidf($tfidf);
-			$this->save_keywords($keywords,$doc_id);
 		}
 	}
 
@@ -289,10 +287,6 @@ class Tfidf_cosine_model extends CI_Model{
 		$keywords = $this->tfidf_keywords($words,$doc_id);
 		$this->save_keywords($keywords,$doc_id);
 	}
-
-
-
-
 
 
 
@@ -341,21 +335,9 @@ class Tfidf_cosine_model extends CI_Model{
 	/*
 	 * Mysql pivot table to combine all vars
 	 * alternative better performance solution
+	 * Pivots are very bad in performance, use following instead
 	 *
 	private function read_tfidf_vector_from_db(){
-		$alldocs = $this->get_all_doc_id();
-		$query = "SELECT word ";
-		$vectors = array();
-		foreach ($alldocs as $key => $value) {
-			$doc_id=(int)$value->id;
-			$query = $query.", MAX(IF(doc_id = ".$doc_id.", tfidf, 0)) AS doc".$doc_id.",";
-		}
-		$query = $query."FROM allwords GROUP BY word";
-		var_dump($query);
-
-	
-	//Pivots are very bad in performance, use following instead
-
 		$alldocs = $this->get_all_doc_id();
 		$query = "SELECT word ";
 		foreach ($alldocs as $key => $value) {
@@ -378,7 +360,6 @@ class Tfidf_cosine_model extends CI_Model{
 		$query = $this->db->query("SELECT GROUP_CONCAT(DISTINCT CONCAT('MAX(IF(doc_id = ''',doc_id,''', tfidf, 0)) AS ', concat('d',doc_id))) as q FROM allwords");
 		$row = $query->row();
 		$query = $this->db->query("SELECT word, ".$row->q." FROM allwords GROUP BY word");
-		//var_dump($query->result());die();
 		return $query->result_array();
 	}
 
@@ -440,6 +421,7 @@ class Tfidf_cosine_model extends CI_Model{
 
 	/*
 	 * Find cosine similarity of all documents
+	 * complexity of n^2
 	 * @param
 	 * @return
 	 */
@@ -457,7 +439,6 @@ class Tfidf_cosine_model extends CI_Model{
 			$vector[$key]=$newArray;
 		}
 
-		//var_dump($vector);die();
 		$this->db->query('truncate similarity');
 		$result=array();
 		$final=array();
@@ -467,14 +448,12 @@ class Tfidf_cosine_model extends CI_Model{
 				$doc_id2 = $value2->id;$key2 = 'd'.$doc_id2;
 				$similarity = (double)$this->calculate_cosine_similarity($vector[$key1],$vector[$key2]);
 				$this->save_cosine_similarity($doc_id1,$doc_id2,$similarity);
-				//echo $key." ~ ".$key2." = ".$similarity.'<br>';
 				$result[$key.'_'.$key2]=$similarity;
 			}
-			arsort($result);
-			echo '<pre>';print_r($result);echo('</pre>');
-			$final = array_merge($final,$result);
+			//arsort($result);
+			//echo '<pre>';print_r($result);echo('</pre>');
+			//$final = array_merge($final,$result);
 			unset($result);
 		}
-		//echo '<pre>';var_dump($vectors);echo '</pre>';die();
 	}
 }
