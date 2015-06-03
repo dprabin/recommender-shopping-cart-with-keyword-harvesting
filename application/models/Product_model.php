@@ -20,6 +20,16 @@ class Product_model extends CI_Model{
 		return $query->row();
 	}
 
+	//Get title of single product
+	//get_product_details can also be used
+	public function get_product_title($id){
+		$this->db->select('title');
+		$this->db->from('products');
+		$this->db->where('id',$id);
+		$query = $this->db->get()->row();
+		return $query->title;
+	}
+
 	//get keywords for the single product
 	public function get_keywords_of($id){
 		$this->db->select('*');
