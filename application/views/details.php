@@ -12,11 +12,21 @@
 				<button class="btn btn-primary" type="submit">Add To Cart</button>
 			</form>
 		</div>
-		<div class="details-keywords"><p><?php echo $product->keywords; ?></p></div>
-		<div class="details-similar"><p><?php echo $product->sim; ?></p></div>
+		<div class="details-keywords">Keywords: 
+			<?php foreach($keywords as $key=>$value) : ?>
+				<?php echo $value."&nbsp;&nbsp;&nbsp;"; ?>
+			<?php endforeach; ?>
+		</div>
+
 		<div class="details-description"><p><?php echo $product->description; ?></p></div>
 	</div>
 	<div class="col-md-4">
+		<div class="details-keywords">Similar:
+		<ul class="list-group">
+			<?php foreach($similar as $key=>$value) : ?>
+				<li class="list-group-item"><?php echo $value."&nbsp;&nbsp;&nbsp;"; ?></li>
+			<?php endforeach; ?>
+		</ul></div>
 
 		<div class="details-description">
 		  <h4>Nutritional value</h4>
