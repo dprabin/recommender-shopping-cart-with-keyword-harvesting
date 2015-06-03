@@ -12,11 +12,19 @@ class Product_model extends CI_Model{
 
 	//Get a single product
 	public function get_product_details($id){
-		$this->db->select('products.*,group_concat(word) as keywords');
-		$this->db->from('products');
-		$this->db->join('allwords','products.id=allwords.doc_id');
-		$this->db->where('products.id',$id);
-		$this->db->where('allwords.keyword','1');
+		$this->db->select('p.*,group_concat(distinct a.word) as keywords, group_concat(distinct s.doc_id2) as sim ');
+		$this->db->from('products as p');
+		$this->db->from('(select * from allwords where doc_id='.$id.' order by tfidf desc limit 5) as a');
+		$this->db->from('(select * from similarity where doc_id1='.$id.' and similarity<1 and similarity>0 order by similarity desc limit 5) as s');
+		$this->db->where('p.id',$id);
+		//$this->db->where('allwords.keyword','1');
+		//$this->db->order_by('similarity.similarity');
+		
+		/*$this->db->query("select p.*,group_concat(distinct a.word) as keywords, group_concat(distinct s.doc_id2) as sim 
+from products as p, 
+(select * from allwords where doc_id=1 order by tfidf desc limit 5) as a,
+(select * from similarity where doc_id1=1 and similarity<1 and similarity>0 order by similarity desc limit 5) as s
+where p.id=1");*/
 		$query = $this->db->get();
 		return $query->row();
 	}
