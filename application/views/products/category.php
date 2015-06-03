@@ -15,4 +15,6 @@
 		</div>
 	</div>
 <?php endforeach; ?>
-</div><!-- /Food items -->
+</div>
+<?php echo $pagination_links; ?>
+<!-- /Food items -->
