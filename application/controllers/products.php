@@ -51,7 +51,7 @@ class Products extends CI_Controller{
         $links = array();
         foreach ($similar as $key => $value) {
             $item = $value->doc_id2;
-            $links[$item] = '<a href="'.base_url().'product/details/'.$item.'">'.$this->Product_model->get_product_title($item).'</a>';
+            $links[$item] = '<a href="'.base_url().'products/details/'.$item.'">'.$this->Product_model->get_product_title($item).'</a>';
         }
         return $links;
     }
