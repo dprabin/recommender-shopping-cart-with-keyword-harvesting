@@ -27,7 +27,6 @@ class Product_model extends CI_Model{
 		$this->db->where('doc_id',$id);
 		$this->db->order_by('tfidf desc');
 		$this->db->limit('5');
-		$this->db->from('(select * from similarity where doc_id1='.$id.' and similarity<1 and similarity>0 order by similarity desc limit 5) as s');
 		$query = $this->db->get();
 		return $query->result();
 	}
