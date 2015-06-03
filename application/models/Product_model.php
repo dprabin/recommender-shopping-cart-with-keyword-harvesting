@@ -46,8 +46,8 @@ class Product_model extends CI_Model{
 		$this->db->select('*');
 		$this->db->from('similarity');
 		$this->db->where('doc_id1',$id);
-		$this->db->where('similarity<',1); 
-		$this->db->where('similarity>',0);
+		$this->db->where('similarity<',1,FALSE); 
+		$this->db->where('similarity>',0,FALSE);
 		$this->db->order_by('similarity desc');
 		$this->db->limit('5');
 		$query = $this->db->get();
