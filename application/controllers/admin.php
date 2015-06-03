@@ -17,9 +17,7 @@ class Admin extends CI_Controller{
 		$this->load->view('layouts/main',$data);
 	}
 
-
 	//Order Reports
-
 	public function all_orders(){
 		$this->load->model('Order_model');
 		$data['report_title'] = 'All Orders';
@@ -159,13 +157,15 @@ class Admin extends CI_Controller{
 		$this->load->model('Tfidf_cosine_model');
 		$this->Tfidf_cosine_model->regenerate_allwords_table();
 		$this->Tfidf_cosine_model->regenerate_keywords_table();
+		$this->session->set_flashdata('action_successful','Keywords generated successfully');
 		redirect('admin');
 	}
 
 	//This method for testing cosine similarity
 	public function cosine_similarity(){
 		$this->load->model('Tfidf_cosine_model');
-		$this->Tfidf_cosine_model->find_cosine_similarity_alldocs(1);
+		$this->Tfidf_cosine_model->find_cosine_similarity_alldocs();
+		$this->session->set_flashdata('action_successful','Cosine similarity calculated successfully.');
 		redirect('admin');
 	}
 }
