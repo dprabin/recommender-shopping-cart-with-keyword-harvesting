@@ -17,8 +17,8 @@ class Products extends CI_Controller{
         if(!empty($id)){
         	//Get Product Details and other data
         	$data['product'] = $this->Product_model->get_product_details($id);
-            $data['keywords'] = $this->Product_model->get_keywords_of($id);
-            $data['similar'] = $this->Product_model->get_similar_to($id);
+            $data['keywords'] = $this->make_keyword_link($this->Product_model->get_keywords_of($id));
+            $data['similar'] = $this->make_similar_link($this->Product_model->get_similar_to($id));
         	//Define the main content as details view
             $data['main_content'] = 'details';
             //load product view
@@ -27,6 +27,33 @@ class Products extends CI_Controller{
             $this->session->set_flashdata('action_unsuccessful','You didnt supply the product id');
             redirect('products');
         }
+    }
+
+    /*
+     * generate links to keyword for displaying in view
+     * @param array keywords
+     * @return array keywords
+     */
+    private function make_keyword_link($keywords){
+        $links = array();
+        foreach ($keywords as $key => $value) {
+            $keyword = $value->word;
+            $links[$keyword] = '<a href="'.base_url().'keyword/'.$keyword.'">'.$keyword.'</a>';
+        }
+        return $links;
+    }
+    /*
+     * generate links to similar items for displaying in view
+     * @param array similar
+     * @return array similar
+     */
+    private function make_similar_link($similar){
+        $links = array();
+        foreach ($similar as $key => $value) {
+            $item = $value->doc_id2;
+            $links[$item] = '<a href="'.base_url().'product/details/'.$item.'">'.$this->Product_model->get_product_title($item).'</a>';
+        }
+        return $links;
     }
 
     //Display the detail information of a product
