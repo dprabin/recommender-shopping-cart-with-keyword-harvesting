@@ -15,8 +15,10 @@ class Products extends CI_Controller{
     //Display the detail information of a product
     public function details($id=null){
         if(!empty($id)){
-        	//Get Product Details
+        	//Get Product Details and other data
         	$data['product'] = $this->Product_model->get_product_details($id);
+            $data['keywords'] = $this->Product_model->get_keywords_of($id);
+            $data['similar'] = $this->Product_model->get_similar_to($id);
         	//Define the main content as details view
             $data['main_content'] = 'details';
             //load product view
