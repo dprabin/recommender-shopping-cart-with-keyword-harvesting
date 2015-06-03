@@ -6,8 +6,8 @@ class Products extends CI_Controller{
     	$data['products'] = $this->Product_model->get_products();
 
     	//Load View
-        //Define the main content area as products view (product.php)
-        $data['main_content'] = 'products';
+        //Define the main content area as products view (products.php)
+        $data['main_content'] = 'products/products';
         //load product view
         $this->load->view('layouts/main',$data);
     }
@@ -20,7 +20,7 @@ class Products extends CI_Controller{
             $data['keywords'] = $this->make_keyword_link($this->Product_model->get_keywords_of($id));
             $data['similar'] = $this->make_similar_link($this->Product_model->get_similar_to($id));
         	//Define the main content as details view
-            $data['main_content'] = 'details';
+            $data['main_content'] = 'products/details';
             //load product view
             $this->load->view('layouts/main',$data);
         } else {
@@ -38,7 +38,7 @@ class Products extends CI_Controller{
         $links = array();
         foreach ($keywords as $key => $value) {
             $keyword = $value->word;
-            $links[$keyword] = '<a href="'.base_url().'keyword/'.$keyword.'">'.$keyword.'</a>';
+            $links[$keyword] = '<a href="'.base_url().'products/keyword/'.$keyword.'">'.$keyword.'</a>';
         }
         return $links;
     }
@@ -92,7 +92,7 @@ class Products extends CI_Controller{
                             }
                         }
                     } else {
-                        $data['main_content'] = 'edit';
+                        $data['main_content'] = 'products/edit';
                         $this->load->view('layouts/main',$data);
                     }
                 } else {
@@ -123,7 +123,7 @@ class Products extends CI_Controller{
             $this->form_validation->set_rules('unit','Unit of product', 'trim|required|max_length[25]|min_length[1]');
 
             if($this->form_validation->run() == FALSE){
-                $data['main_content'] = 'add';
+                $data['main_content'] = 'products/add';
                 $this->load->view('layouts/main',$data);
             } else {
                 if ($this->Product_model->upload_image() && $this->Product_model->add_product()){
@@ -163,12 +163,19 @@ class Products extends CI_Controller{
     public function category($id=null){
          if(!empty($id)){
             $data['category_items'] = $this->Product_model->get_products_by('category_id',$id);
-            $data['main_content'] = 'category';
+            $data['main_content'] = 'products/category';
             $this->load->view('layouts/main',$data);
         } else {
             $this->session->set_flashdata('action_unsuccessful','You didnt supply the category id');
             redirect('products');
         }
+    }
+
+    //get products by keyword
+    public function keyword($keyword='rice'){
+        $data['products'] = $this->Product_model->get_products_by_keyword($keyword);
+        $data['main_content'] = 'products/keyword';
+        $this->load->view('layouts/main',$data);
     }
 }
 
