@@ -16,12 +16,9 @@
 <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script-->
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="js/ie10-viewport-bug-workaround.js"></script>
-
-
 </head>
 
 <body>
-
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
@@ -45,8 +42,8 @@
           <li><a href="<?php echo base_url(); ?>products/add">Add Product</a></li>
         <?php endif; ?>
         <li><a href="https://github.com/dprabin/simple-php-shopping-cart">Download</a></li>
-
       </ul>
+      <?php $this->load->view('layouts/includes/search_bar');?>
       <?php if(!$this->session->userdata('logged_in')) : ?>
         <form method="post" action="<?php echo base_url(); ?>users/login" class="navbar-form navbar-right">
           <div class="form-group">
