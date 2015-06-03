@@ -53,7 +53,7 @@ class Tfidf_cosine_model extends CI_Model{
 	 */
 	private function remove_blacklisted_words($string){
 		//TOCHANGE: read blacklisted words from database instead defining array here
-	    $blackwords = array("'s","n't","the","all","you","for","from","between","and","but","not","was","will","were","are","who","which","why","how","when","this","that","those","these","their","has","had","more","most","very","much","can","its","with","into","been","only","need");
+	    $blackwords = array("'s","n't","the","all","you","for","from","between","and","but","not","was","will","were","are","who","which","why","how","when","this","that","those","these","their","they","has","had","more","most","very","much","can","its","with","into","been","only","need");
 	    //TOCHANGE: find method to replace all array at once without foreach loop
 	    foreach($blackwords as $bword){
 	        $string = str_replace($bword." "," ",$string);
