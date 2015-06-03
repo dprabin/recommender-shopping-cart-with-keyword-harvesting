@@ -39,7 +39,6 @@
     </div>
     <ul class="list-group">
       <li class="list-group-item"><a href="<?php echo base_url(); ?>admin/regenerate_keywords">Regenerate keywords</a></li>
-      <li class="list-group-item"><a href="<?php echo base_url(); ?>admin/generate_tfidf_vector">Generate TFIDF vector</a></li>
       <li class="list-group-item"><a href="<?php echo base_url(); ?>admin/cosine_similarity">Find similar doc</a></li>
     </ul>
   </div><!--/keywords -->
