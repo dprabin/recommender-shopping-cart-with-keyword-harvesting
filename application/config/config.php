@@ -43,8 +43,8 @@ $config['paypal_api_password']  = '123456'; //Paypal API password
 $config['paypal_api_signature'] = 'ZWxwchnCsdQg5PxAUjcH6OPuZK3sPcPH'; //Paypal API Signature
 $config['paypal_api_endpoint']  = 'https://api-3t.sandbox.paypal.com/nvp'; //sandbox or live: https://api-3t.paypal.com/nvp
 $config['paypal_currency_code'] = 'USD'; //Paypal Currency Code
-$config['paypal_return_url']    = $config['base_url'].'cart/process'; //Point to process.php page
-$config['paypal_cancel_url']    = $config['base_url'].'cart/cancel'; //Cancel URL if user clicks cancel
+$config['paypal_return_url']    = $config['base_url'].'cart/payment_success'; //Point to payment_success.php page
+$config['paypal_cancel_url']    = $config['base_url'].'cart/payment_error'; //Cancel URL if user clicks cancel
 
 /*
 |-----------------------------------------------
