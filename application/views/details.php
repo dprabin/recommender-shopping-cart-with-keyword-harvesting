@@ -13,6 +13,7 @@
 			</form>
 		</div>
 		<div class="details-keywords"><p><?php echo $product->keywords; ?></p></div>
+		<div class="details-similar"><p><?php echo $product->sim; ?></p></div>
 		<div class="details-description"><p><?php echo $product->description; ?></p></div>
 	</div>
 	<div class="col-md-4">
