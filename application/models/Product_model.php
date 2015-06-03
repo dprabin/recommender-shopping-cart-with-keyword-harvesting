@@ -156,6 +156,13 @@ class Product_model extends CI_Model{
 		return $this->image_lib->resize();
 	}
 
+	//Get products by keyword
+	public function get_products_by_keyword($keyword){
+		//(select * from fruits where type = 'apple' order by price limit 5)
+		//union all
+		$query = $this->db->query("select distinct id,title from products where id in (select a1.doc_id from allwords a1 where (select count(*) from allwords a2 where a1.doc_id=a2.doc_id and a1.tfidf<=a2.tfidf) <=5 and word=".$this->db->escape($keyword).")");
+		return $query->result();
+	}
 }
 
 ?>
