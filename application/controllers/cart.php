@@ -132,9 +132,7 @@ class Cart extends CI_Controller{
 							'&CARTBORDERCOLOR=FFFFFF'.
 							'&ALLOWNOTE=1';
 
-
 						//SetExpressCheckout
-						//				$httpParsedResponseAr = $this->paypal->PPHttpPost('SetExpressCheckout',$padata);
 						$httpParsedResponseAr = $this->paypal->PPHttpPost('SetExpressCheckout',$padata,$this->config->item('paypal_api_username'),$this->config->item('paypal_api_password'),$this->config->item('paypal_api_signature'),$this->config->item('paypal_api_endpoint'));
 
 						if("SUCCESS" == strtoupper($httpParsedResponseAr['ACK']) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])){
