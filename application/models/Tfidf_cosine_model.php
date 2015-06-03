@@ -435,7 +435,6 @@ class Tfidf_cosine_model extends CI_Model{
 	 * @return
 	 */
 	private function save_cosine_similarity($doc_id1,$doc_id2,$similarity){
-		$this->db->query('truncate similarity');
 		$this->db->query("insert into similarity (doc_id1,doc_id2,similarity) values($doc_id1,$doc_id2,$similarity)");
 	}
 
@@ -459,12 +458,15 @@ class Tfidf_cosine_model extends CI_Model{
 		}
 
 		//var_dump($vector);die();
+		$this->db->query('truncate similarity');
 		$result=array();
 		$final=array();
-		foreach ($row as $key => $value) {
-			foreach ($row as $key2 => $value2) {
-				$similarity = $this->calculate_cosine_similarity($vector[$key],$vector[$key2]);
-				//$this->save_cosine_similarity($key1,$key2,$similarity);
+		foreach ($alldocs as $key => $value1) {
+			$doc_id1 = $value1->id;$key1 = 'd'.$doc_id1;
+			foreach ($alldocs as $key => $value2) {
+				$doc_id2 = $value2->id;$key2 = 'd'.$doc_id2;
+				$similarity = (double)$this->calculate_cosine_similarity($vector[$key1],$vector[$key2]);
+				$this->save_cosine_similarity($doc_id1,$doc_id2,$similarity);
 				//echo $key." ~ ".$key2." = ".$similarity.'<br>';
 				$result[$key.'_'.$key2]=$similarity;
 			}
